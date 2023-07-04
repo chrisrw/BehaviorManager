@@ -2,16 +2,17 @@ import Header from './components/Header';
 import React from 'react';
 import Container from '@mui/material/Container';
 import IncidentForm from './components/IncidentForm';
-import Students from './components/Students';
+
+import InfractionsTable from './components/InfractionsTable';
 
 
 function App() {
   return (
     <React.Fragment>
       <Header />
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <IncidentForm />
-        <Students />
+        <InfractionsTable />
       </Container>
       </React.Fragment>
   );
