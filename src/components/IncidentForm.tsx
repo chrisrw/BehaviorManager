@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Container, Grid, Select, MenuItem, SelectChangeEvent, InputLabel, FormControl } from '@mui/material';
+import { TextField, Button, Box, Grid, Select, MenuItem, SelectChangeEvent, InputLabel, FormControl } from '@mui/material';
 import axios from 'axios';
+import { useInfractionsContext } from '../context/InfractionsContext';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+
 
 interface FormValues {
   student_name: string;
@@ -20,6 +24,7 @@ const initialFormValues: FormValues = {
 
 const IncidentForm: React.FC = () => {
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
+  const { fetchInfractions } = useInfractionsContext();
 
   const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,23 +41,33 @@ const IncidentForm: React.FC = () => {
       period: value,
     }));
   };
+
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      const formattedDate = date.toISOString().split('T')[0];
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        date: formattedDate,
+      }));
+    }
+  };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formValues);
-     // Make the POST request using Axios
-     axios.post('http://localhost:3001/data/infractions', formValues)
-     .then((response) => {
-       console.log(response.data);
-       setFormValues(initialFormValues);
-     })
-     .catch((error) => {
-       console.error('Error:', error);
-     });
+    axios
+      .post('http://localhost:3001/data/infractions', formValues)
+      .then((response) => {
+        console.log(response.data);
+        setFormValues(initialFormValues);
+        fetchInfractions();
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
 
   return (
     <>
-
       <h1>Infraction Form</h1>
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container spacing={2}>
@@ -94,12 +109,10 @@ const IncidentForm: React.FC = () => {
             </FormControl>
           </Grid>
           <Grid item xs={1}>
-            <TextField
+          <DatePicker
               label="Date"
-              name="date"
-              fullWidth
-              value={formValues.date}
-              onChange={handleTextFieldChange}
+              value={dayjs(formValues.date).toDate()}
+              onChange={(date) => handleDateChange(date)}
             />
           </Grid>
           <Grid item xs={9}>
@@ -114,12 +127,11 @@ const IncidentForm: React.FC = () => {
             />
           </Grid>
         </Grid>
-        <Button size="large" type="submit" variant="contained" >
+        <Button size="large" type="submit" variant="contained">
           Submit
-          </Button>
+        </Button>
       </Box>
-      
-      </>
+    </>
   );
 };
 

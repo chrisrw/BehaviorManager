@@ -1,30 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
+import { useInfractionsContext } from '../context/InfractionsContext';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import dayjs from 'dayjs';
 
-interface Infraction {
-    student_name: string;
-    student_number: string;
-    date: string;
-    period: string;
-    incident_description: string;
-  }
   
 const InfractionsTable: React.FC = () => {
-    const [infractions, setInfractions] = useState<Infraction[]>([]);
+  const { infractions, fetchInfractions } = useInfractionsContext();
   
     useEffect(() => {
-      // Fetch the list of infractions from the server
-        console.log(infractions)
-      axios.get('http://localhost:3001/data')
-        .then(response => {
-          setInfractions(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching infractions:', error);
-        });
-    }, []);
+      fetchInfractions()
+    }, [fetchInfractions]);
   
+    const handleDeleteInfraction = (student_number: string) => {
+      // Make the DELETE request using Axios or fetch
+      // Here's an example using Axios
+      axios
+        .delete(`http://localhost:3001/data/infractions/${student_number}`)
+        .then((response) => {
+          console.log(response.data);
+          fetchInfractions(); // Fetch infractions again to update the table
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    };
     return (
       <div>
         <h1>Infractions</h1>
@@ -44,9 +45,11 @@ const InfractionsTable: React.FC = () => {
                 <TableRow key={student_number}>
                   <TableCell>{infraction.student_name}</TableCell>
                   <TableCell>{infraction.student_number}</TableCell>
-                  <TableCell>{infraction.date}</TableCell>
+                  <TableCell>{dayjs(infraction.date).format('MM-DD-YYYY')}</TableCell>
                   <TableCell>{infraction.period}</TableCell>
                   <TableCell>{infraction.incident_description}</TableCell>
+                  <IconButton onClick={() => handleDeleteInfraction(infraction.student_number)}>
+                    <DeleteIcon /> </IconButton>
                 </TableRow>
               ))}
             </TableBody>
