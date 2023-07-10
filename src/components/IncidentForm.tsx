@@ -89,7 +89,7 @@ const IncidentForm: React.FC = () => {
               onChange={handleTextFieldChange}
             />
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={1}>
             <FormControl fullWidth>
               <InputLabel id="period">Period</InputLabel>
               <Select
@@ -108,11 +108,12 @@ const IncidentForm: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={2}>
           <DatePicker
               label="Date"
               value={dayjs(formValues.date).toDate()}
               onChange={(date) => handleDateChange(date)}
+              disableFuture 
             />
           </Grid>
           <Grid item xs={9}>
