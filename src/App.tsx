@@ -48,7 +48,7 @@ function App() {
     <Router>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <InfractionsProvider>
-          <Header />
+          <Header  />
           <Container maxWidth="xl">
             <Routes>
               <Route path="/" element={<Home />} />
