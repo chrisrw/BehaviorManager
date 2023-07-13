@@ -1,8 +1,10 @@
 import React from 'react'
+import IncidentForm from '../components/IncidentForm'
+import InfractionsTable from '../components/InfractionsTable'
 
 function Home() {
   return (
-    <div>Home</div>
+    <><IncidentForm /><InfractionsTable /></> 
   )
 }
 
